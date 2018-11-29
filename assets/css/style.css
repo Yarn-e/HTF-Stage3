@@ -8,4 +8,21 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: sans-serif;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+
+aside {
+    width: 20%;
+    margin-left: 10px;
+}
+
+
+input {
+    width: 20px;
 }
