@@ -1,4 +1,5 @@
 let player = {};
+let pyramids = [];
 function fetchMap(){
     fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3",{
         method: "GET",
@@ -18,6 +19,31 @@ function fetchMap(){
 
 $(document).ready(() => {
     fetchMap();
+    $(document).keydown(function(e) {
+        let move = {};
+    switch(e.which) {
+        case 37: player.x -= 3;
+        break;
+
+        case 38: player.y -= 3;// up
+        break;
+
+        case 39: player.x += 3;// right
+        break;
+
+        case 40: player.y += 3;// down
+        break;
+
+        default: return; // exit this handler for other keys
+    }
+        postPlayerLocation(player);
+        fetchMap();
+        if(pyramids.length == 3){
+            postPyramids();   
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+    
     
 })
 
@@ -25,7 +51,7 @@ function drawGrid(field){
     let canvas = document.getElementById("map");
     let ctx = canvas.getContext("2d");
     ctx.fillStyle = "#FF0000";
-    
+    pyramids = [];
     for(let tile of field){
         switch(tile.type){
             case 1: ctx.fillStyle = "brown";
@@ -35,6 +61,7 @@ function drawGrid(field){
                     player.y = tile.y;
                 break;
             case 3: ctx.fillStyle = "orange";
+                    pyramids.push({"x":tile.x, "y": tile.y});
                 break;
         }
         ctx.fillRect(tile.x*10,tile.y*10,10,10);
@@ -66,20 +93,32 @@ function drawBoard(){
 }
 
 
-function postSentence(sentence){
-    console.log(sentence);
-    fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/2",{
+function postPlayerLocation(moveTo){
+    fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3/move",{
         method: "POST",
         headers:{
             "Content-Type":  "application/json",
             "Accept": "application/json",
             "x-team" : "lawyer"
         },
-        body: JSON.stringify({"sentence" : sentence})
+        body: JSON.stringify(moveTo)
         
     }).then(function(response){
         return response;
-    }).then(data => {
-        console.log(data);
+    })
+}
+
+function postPyramids(){
+    fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3",{
+        method: "POST",
+        headers:{
+            "Content-Type":  "application/json",
+            "Accept": "application/json",
+            "x-team" : "lawyer"
+        },
+        body: JSON.stringify(pyramids)
+        
+    }).then(function(response){
+        return response;
     })
 }
