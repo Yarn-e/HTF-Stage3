@@ -22,8 +22,8 @@ $(document).ready(() => {
 })
 
 function drawGrid(field){
-    var canvas = document.getElementById("map");
-    var ctx = canvas.getContext("2d");
+    let canvas = document.getElementById("map");
+    let ctx = canvas.getContext("2d");
     ctx.fillStyle = "#FF0000";
     
     for(let tile of field){
@@ -39,7 +39,30 @@ function drawGrid(field){
         }
         ctx.fillRect(tile.x*10,tile.y*10,10,10);
     }
+    drawBoard();
     console.log("klaar me tekenen");
+}
+
+
+function drawBoard(){
+    let bw = 800;
+    let bh = 450;
+    let p = 0;
+    let canvas = document.getElementById("map");
+    let context = canvas.getContext("2d");
+    for (let x = 0; x <= bw; x += 10) {
+        context.moveTo(0.5 + x + p, p);
+        context.lineTo(0.5 + x + p, bh + p);
+    }
+
+
+    for (let x = 0; x <= bh; x += 10) {
+        context.moveTo(p, 0.5 + x + p);
+        context.lineTo(bw + p, 0.5 + x + p);
+    }
+
+    context.strokeStyle = "darkgray";
+    context.stroke();
 }
 
 
