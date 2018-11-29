@@ -1,7 +1,9 @@
-let player = {};
-let pyramids = [];
+// Global variables
+let player;
+let pyramids;
 let secretDoor = false;
 let step;
+
 
 $(document).ready(() => {
     renderData();
@@ -9,7 +11,7 @@ $(document).ready(() => {
     $(document).keydown(function (e) {
         switch (e.which) {
             case 37:
-                player.x -= step;
+                player.x -= step; // left
                 break;
 
             case 38:
@@ -25,19 +27,23 @@ $(document).ready(() => {
                 break;
 
             default:
-                return; // exit this handler for other keys
+                return;
         }
         postPlayerLocation(player);
         sleep(50).then(() => {
             renderData();
         });
-        e.preventDefault(); // prevent the default action (scroll / move caret)
+        e.preventDefault();
     });
-
 
     $('#steps').on('change', changeSteps);
 });
 
+/**
+ * Adjust the amount of steps u want to take.
+ * @param elem
+ *   The input field.
+ */
 function changeSteps(elem) {
     step = parseInt(elem.target.value);
 }
@@ -65,6 +71,12 @@ async function renderData() {
     drawGrid(tilesMap);
 }
 
+/**
+ * Draws the grid of the game via the API data.
+ *
+ * @param field
+ *   The given field data.
+ */
 function drawGrid(field) {
     let canvas = document.getElementById("map");
     let ctx = canvas.getContext("2d");
@@ -97,7 +109,12 @@ function drawGrid(field) {
     }
 }
 
-
+/**
+ * Sends a POST request to the API endpoint to send the new player location.
+ *
+ * @param moveTo
+ *   The new location of the player.
+ */
 function postPlayerLocation(moveTo) {
     fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3/move", {
         method: "POST",
@@ -113,6 +130,9 @@ function postPlayerLocation(moveTo) {
     })
 }
 
+/**
+ * Sends a POST request to the API endpoint to send the 3 pyramid locations.
+ */
 function postPyramids() {
     let body = JSON.stringify({"positions": pyramids});
     console.log(body);
@@ -136,6 +156,12 @@ function postPyramids() {
     })
 }
 
+/**
+ * Draws the door on the canvas.
+ *
+ * @param data
+ *   The location of the door.
+ */
 function drawDoor(data) {
     let canvas = document.getElementById("map");
     let ctx = canvas.getContext("2d");
@@ -143,6 +169,13 @@ function drawDoor(data) {
     ctx.fillRect(data.x * 10, data.y * 10, 10, 10);
 }
 
+/**
+ * Creates a sleep thread
+ * @param time
+ *   The time you want to sleep
+ *
+ * @returns {Promise<any>}
+ */
 function sleep (time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
