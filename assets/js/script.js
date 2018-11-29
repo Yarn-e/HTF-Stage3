@@ -1,7 +1,7 @@
 let player = {};
 let pyramids = [];
-let secretdoor = false;
-let step = 1;
+let secretDoor = false;
+let step;
 
 $(document).ready(() => {
     renderData();
@@ -55,14 +55,14 @@ function fetchMap() {
         return response;
     }).then((data) => {
         return data.json();
-    }).then((jsondata) => {
-        return jsondata.tiles;
+    }).then((jsonData) => {
+        return jsonData.tiles;
     });
 }
 
 async function renderData() {
-    let tilesmap = await fetchMap();
-    drawGrid(tilesmap);
+    let tilesMap = await fetchMap();
+    drawGrid(tilesMap);
 }
 
 function drawGrid(field) {
@@ -87,12 +87,13 @@ function drawGrid(field) {
         }
         ctx.fillRect(tile.x * 10, tile.y * 10, 10, 10);
     }
-    if (pyramids.length === 3 && !secretdoor) {
+
+    if (pyramids.length === 3 && !secretDoor) {
         postPyramids();
     }
 
-    if (secretdoor) {
-        drawDoor(secretdoor);
+    if (secretDoor) {
+        drawDoor(secretDoor);
     }
 }
 
@@ -130,7 +131,7 @@ function postPyramids() {
         return data.json();
     }).then(jsondata => {
         console.log(jsondata);
-        secretdoor = jsondata;
+        secretDoor = jsondata;
         drawDoor(jsondata);
     })
 }
