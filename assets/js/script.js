@@ -1,5 +1,6 @@
 let player = {};
 let pyramids = [];
+let secretdoor = {};
 function fetchMap(){
     fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3",{
         method: "GET",
@@ -19,28 +20,26 @@ function fetchMap(){
 
 $(document).ready(() => {
     fetchMap();
+    
     $(document).keydown(function(e) {
         let move = {};
     switch(e.which) {
-        case 37: player.x -= 3;
+        case 37: player.x -= 1;
         break;
 
-        case 38: player.y -= 3;// up
+        case 38: player.y -= 1;// up
         break;
 
-        case 39: player.x += 3;// right
+        case 39: player.x += 1;// right
         break;
 
-        case 40: player.y += 3;// down
+        case 40: player.y += 1;// down
         break;
 
         default: return; // exit this handler for other keys
     }
         postPlayerLocation(player);
         fetchMap();
-        if(pyramids.length == 3){
-            postPyramids();   
-        }
         e.preventDefault(); // prevent the default action (scroll / move caret)
     });
     
@@ -66,17 +65,20 @@ function drawGrid(field){
         }
         ctx.fillRect(tile.x*10,tile.y*10,10,10);
     }
+    if(pyramids.length == 3){
+        postPyramids();   
+    }
     drawBoard();
     console.log("klaar me tekenen");
 }
 
 
 function drawBoard(){
+    let canvas = document.getElementById("map");
+    let context = canvas.getContext("2d");
     let bw = 800;
     let bh = 450;
     let p = 0;
-    let canvas = document.getElementById("map");
-    let context = canvas.getContext("2d");
     for (let x = 0; x <= bw; x += 10) {
         context.moveTo(0.5 + x + p, p);
         context.lineTo(0.5 + x + p, bh + p);
@@ -109,6 +111,8 @@ function postPlayerLocation(moveTo){
 }
 
 function postPyramids(){
+    let body = JSON.stringify({"positions": pyramids});
+    console.log(body);
     fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3",{
         method: "POST",
         headers:{
@@ -116,9 +120,22 @@ function postPyramids(){
             "Accept": "application/json",
             "x-team" : "lawyer"
         },
-        body: JSON.stringify(pyramids)
+        body: body
         
     }).then(function(response){
         return response;
+    }).then(data => {
+        return data.json();
+    }).then(jsondata => {
+        console.log(jsondata);
+        secretdoor = jsondata;
+        drawDoor(jsondata);
     })
+}
+
+function drawDoor(data){
+    let canvas = document.getElementById("map");
+    let ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#FFFF00";
+    ctx.fillRect(data.x*10,data.y*10,10,10);
 }
