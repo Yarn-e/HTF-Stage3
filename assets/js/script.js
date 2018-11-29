@@ -1,3 +1,4 @@
+let player = {};
 function fetchMap(){
     fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3",{
         method: "GET",
@@ -30,6 +31,8 @@ function drawGrid(field){
             case 1: ctx.fillStyle = "brown";
                 break;
             case 2: ctx.fillStyle = "blue";
+                    player.x = tile.x;
+                    player.y = tile.y;
                 break;
             case 3: ctx.fillStyle = "orange";
                 break;
