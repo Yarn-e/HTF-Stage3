@@ -1,8 +1,8 @@
 // Global variables
-let player;
-let pyramids;
+let player = {};
+let pyramids = {};
 let secretDoor = false;
-let step;
+let step = 1;
 
 
 $(document).ready(() => {
@@ -47,7 +47,6 @@ $(document).ready(() => {
 function changeSteps(elem) {
     step = parseInt(elem.target.value);
 }
-
 
 function fetchMap() {
     return fetch("http://involved-htf-js-2018-prod.azurewebsites.net/api/challenge/3", {
